@@ -45,7 +45,7 @@ class ScheduleControllerTest {
         .body(requestBody)
         .contentType(MediaType.APPLICATION_JSON_VALUE)
         .when()
-        .post("/schedule")
+        .post("/schedules")
         .then().log().all()
         .extract();
 
@@ -64,7 +64,7 @@ class ScheduleControllerTest {
     ExtractableResponse<Response> response = RestAssured.given().log().all()
         .contentType(MediaType.APPLICATION_JSON_VALUE)
         .when()
-        .get("/schedule")
+        .get("/schedules")
         .then().log().all()
         .extract();
 

@@ -15,12 +15,12 @@ import org.springframework.web.bind.annotation.RestController;
 public class ScheduleController {
   private final ScheduleService scheduleService;
 
-  @PostMapping("/schedule")
+  @PostMapping("/schedules")
   public CreateScheduleResponse createSchedule(@RequestBody CreateScheduleRequest request) {
     return scheduleService.createSchedule(request);
   }
 
-  @GetMapping("/schedule")
+  @GetMapping("/schedules")
   public List<CreateScheduleResponse> getSchedules() {
     return scheduleService.getSchedules();
   }
