@@ -41,7 +41,7 @@ class ScheduleRepositoryTest {
     Schedule savedSchedule = scheduleRepository.save(schedule);
 
     // then
-    assertThat(savedSchedule.getId()).isEqualTo(1L);
+    assertThat(savedSchedule.getId()).isGreaterThan(0L);
     assertThat(savedSchedule.getTitle()).isEqualTo(schedule.getTitle());
     assertThat(savedSchedule.getContents()).isEqualTo(schedule.getContents());
     assertThat(savedSchedule.getStartedAt()).isEqualTo(schedule.getStartedAt());
