@@ -36,6 +36,7 @@ public class ScheduleService {
         .build();
   }
 
+  @Transactional(readOnly = true)
   public List<CreateScheduleResponse> getSchedules() {
     List<Schedule> schedules = scheduleRepository.findAll();
 
