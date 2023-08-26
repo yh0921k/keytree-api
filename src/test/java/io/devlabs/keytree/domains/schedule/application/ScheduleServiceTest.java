@@ -1,7 +1,10 @@
 package io.devlabs.keytree.domains.schedule.application;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.mockito.AdditionalMatchers.not;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.when;
 
 import io.devlabs.keytree.domains.schedule.application.dto.CreateScheduleRequest;
@@ -11,6 +14,7 @@ import io.devlabs.keytree.domains.schedule.domain.ScheduleRepository;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -62,6 +66,38 @@ class ScheduleServiceTest {
     assertThat(foundSchedules.size()).isEqualTo(schedules.size());
     assertThat(scheduleIds.contains(firstSchedule.getId())).isTrue();
     assertThat(scheduleIds.contains(secondSchedule.getId())).isTrue();
+  }
+
+  @Test
+  @DisplayName("스케줄 아이디로 단일 스케줄 조회")
+  void getScheduleById() {
+    // given
+    Schedule schedule = createScheduleEntity(1L, createScheduleRequest());
+    when(scheduleRepository.findById(any(Long.class))).thenReturn(Optional.of(schedule));
+
+    // when
+    CreateScheduleResponse response = scheduleService.getScheduleById(schedule.getId());
+
+    // then
+    assertThat(response.getId()).isEqualTo(schedule.getId());
+    assertThat(response.getStartedAt()).isEqualTo(schedule.getStartedAt());
+    assertThat(response.getFinishedAt()).isEqualTo(schedule.getFinishedAt());
+    assertThat(response.getTitle()).isEqualTo(schedule.getTitle());
+    assertThat(response.getContents()).isEqualTo(schedule.getContents());
+  }
+
+  @Test
+  @DisplayName("스케줄 아이디로 단일 스케줄 조회시 아이디가 유효하지 않으면 IllegalArgumentException 발생")
+  void getScheduleByInvalidIdThrowsIllegalArgumentException() {
+    // given
+    Schedule schedule = createScheduleEntity(1L, createScheduleRequest());
+
+    doReturn(Optional.empty()).when(scheduleRepository).findById(not(eq(schedule.getId())));
+
+    // when, then
+    assertThatThrownBy(() -> scheduleService.getScheduleById(schedule.getId() + 1))
+        .isInstanceOf(IllegalArgumentException.class)
+        .hasMessage("유효하지 않은 일정입니다.");
   }
 
   private Schedule createScheduleEntity(Long scheduleId, CreateScheduleRequest request) {
