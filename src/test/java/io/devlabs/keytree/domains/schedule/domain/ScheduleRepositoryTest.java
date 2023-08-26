@@ -5,6 +5,8 @@ import static org.assertj.core.api.Assertions.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Optional;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,6 +67,22 @@ class ScheduleRepositoryTest {
     assertThat(schedules.size()).isEqualTo(2);
     assertThat(scheduleIds.contains(1L)).isTrue();
     assertThat(scheduleIds.contains(2L)).isTrue();
+  }
+
+  @Test
+  @DisplayName("일정 아이디로 일정 엔티티 조회")
+  void findById() {
+    // given
+    Schedule schedule = createSchedule();
+    Schedule savedSchedule = scheduleRepository.save(schedule);
+
+    // when
+    Optional<Schedule> foundSchedule = scheduleRepository.findById(savedSchedule.getId());
+
+    // then
+    assertThat(foundSchedule.isPresent()).isTrue();
+    assertThat(foundSchedule.get()).isSameAs(savedSchedule);
+    assertThat(foundSchedule.get()).isEqualTo(savedSchedule);
   }
 
   private Schedule createSchedule() {
