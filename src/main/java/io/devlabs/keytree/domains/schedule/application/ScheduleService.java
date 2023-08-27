@@ -52,4 +52,19 @@ public class ScheduleService {
                     .build())
         .toList();
   }
+
+  @Transactional(readOnly = true)
+  public CreateScheduleResponse getScheduleById(Long id) {
+    Schedule schedule = scheduleRepository
+        .findById(id)
+        .orElseThrow(() -> new IllegalArgumentException("유효하지 않은 일정입니다."));
+
+    return CreateScheduleResponse.builder()
+        .id(schedule.getId())
+        .startedAt(schedule.getStartedAt())
+        .finishedAt(schedule.getFinishedAt())
+        .title(schedule.getTitle())
+        .contents(schedule.getContents())
+        .build();
+  }
 }

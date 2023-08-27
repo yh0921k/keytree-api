@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import io.devlabs.keytree.domains.schedule.application.ScheduleService;
 import io.devlabs.keytree.domains.schedule.application.dto.CreateScheduleRequest;
+import io.devlabs.keytree.domains.schedule.application.dto.CreateScheduleResponse;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
@@ -23,11 +24,9 @@ import org.springframework.test.annotation.DirtiesContext;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class ScheduleControllerTest {
 
-  @Autowired
-  ScheduleService scheduleService;
+  @Autowired ScheduleService scheduleService;
 
-  @LocalServerPort
-  private int port;
+  @LocalServerPort private int port;
 
   @BeforeEach
   void setUp() {
@@ -41,13 +40,18 @@ class ScheduleControllerTest {
     CreateScheduleRequest requestBody = createScheduleRequest();
 
     // when
-    ExtractableResponse<Response> response = RestAssured.given().log().all()
-        .body(requestBody)
-        .contentType(MediaType.APPLICATION_JSON_VALUE)
-        .when()
-        .post("/schedules")
-        .then().log().all()
-        .extract();
+    ExtractableResponse<Response> response =
+        RestAssured.given()
+            .log()
+            .all()
+            .body(requestBody)
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .when()
+            .post("/schedules")
+            .then()
+            .log()
+            .all()
+            .extract();
 
     // then
     assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
@@ -61,16 +65,48 @@ class ScheduleControllerTest {
     scheduleService.createSchedule(createScheduleRequest());
 
     // when
-    ExtractableResponse<Response> response = RestAssured.given().log().all()
-        .contentType(MediaType.APPLICATION_JSON_VALUE)
-        .when()
-        .get("/schedules")
-        .then().log().all()
-        .extract();
+    ExtractableResponse<Response> response =
+        RestAssured.given()
+            .log()
+            .all()
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .when()
+            .get("/schedules")
+            .then()
+            .log()
+            .all()
+            .extract();
 
     // then
     assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     assertThat(response.body().jsonPath().getList("$").size()).isEqualTo(2);
+  }
+
+  @DisplayName("일정 아이디로 일정 상세 조회 API")
+  @Test
+  void getScheduleById() {
+    // given
+    CreateScheduleResponse schedule = scheduleService.createSchedule(createScheduleRequest());
+
+    // when
+    ExtractableResponse<Response> response =
+        RestAssured.given()
+            .pathParam("scheduleId", schedule.getId())
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .log()
+            .all()
+            .when()
+            .get("/schedules/{scheduleId}")
+            .then()
+            .log()
+            .all()
+            .extract();
+
+    // then
+    assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    assertThat(response.body().jsonPath().getLong("id")).isEqualTo(schedule.getId());
+    assertThat(response.body().jsonPath().getString("title")).isEqualTo(schedule.getTitle());
+    assertThat(response.body().jsonPath().getString("contents")).isEqualTo(schedule.getContents());
   }
 
   private CreateScheduleRequest createScheduleRequest() {
