@@ -67,4 +67,9 @@ public class ScheduleService {
         .contents(schedule.getContents())
         .build();
   }
+
+  @Transactional
+  public void removeScheduleById(Long id) {
+    scheduleRepository.deleteById(id);
+  }
 }
