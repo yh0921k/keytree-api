@@ -4,8 +4,7 @@ import static org.assertj.core.api.Assertions.*;
 import static org.mockito.AdditionalMatchers.not;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 import io.devlabs.keytree.domains.schedule.application.dto.CreateScheduleRequest;
 import io.devlabs.keytree.domains.schedule.application.dto.CreateScheduleResponse;
@@ -21,6 +20,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.verification.VerificationMode;
 
 @ExtendWith(MockitoExtension.class)
 class ScheduleServiceTest {
@@ -98,6 +98,16 @@ class ScheduleServiceTest {
     assertThatThrownBy(() -> scheduleService.getScheduleById(schedule.getId() + 1))
         .isInstanceOf(IllegalArgumentException.class)
         .hasMessage("유효하지 않은 일정입니다.");
+  }
+
+  @Test
+  @DisplayName("스케줄 아이디로 스케줄 삭제시 deleteById()가 한 번 수행됨")
+  void removeScheduleByIdCallDeleteByIdOnce() {
+    // when
+    scheduleService.removeScheduleById(1L);
+
+    // when, then
+    verify(scheduleRepository, times(1)).deleteById(any(Long.class));
   }
 
   private Schedule createScheduleEntity(Long scheduleId, CreateScheduleRequest request) {

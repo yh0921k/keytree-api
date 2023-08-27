@@ -26,4 +26,9 @@ public class ScheduleController {
   public CreateScheduleResponse getScheduleById(@PathVariable Long scheduleId) {
     return scheduleService.getScheduleById(scheduleId);
   }
+
+  @DeleteMapping("/schedules/{scheduleId}")
+  public void removeScheduleById(@PathVariable Long scheduleId) {
+    scheduleService.removeScheduleById(scheduleId);
+  }
 }

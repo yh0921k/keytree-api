@@ -109,6 +109,46 @@ class ScheduleControllerTest {
     assertThat(response.body().jsonPath().getString("contents")).isEqualTo(schedule.getContents());
   }
 
+  @DisplayName("일정 아이디로 일정 삭제 API")
+  @Test
+  void removeScheduleById() {
+    // given
+    CreateScheduleResponse schedule = scheduleService.createSchedule(createScheduleRequest());
+
+    // when
+    ExtractableResponse<Response> removeScheduleResponse =
+        RestAssured.given()
+            .pathParam("scheduleId", schedule.getId())
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .log()
+            .all()
+            .when()
+            .delete("/schedules/{scheduleId}")
+            .then()
+            .log()
+            .all()
+            .extract();
+
+    ExtractableResponse<Response> getScheduleResponse =
+        RestAssured.given()
+            .pathParam("scheduleId", schedule.getId())
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .log()
+            .all()
+            .when()
+            .get("/schedules/{scheduleId}")
+            .then()
+            .log()
+            .all()
+            .extract();
+
+    // then
+    assertThat(removeScheduleResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
+
+    // TODO: 현재 전역 예외 처리기가 구현되어 있지 않아, 500 상태를 그대로 검증하지만 추후 개선 필요
+    assertThat(getScheduleResponse.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+  }
+
   private CreateScheduleRequest createScheduleRequest() {
     LocalDateTime startedAt =
         LocalDateTime.parse(
