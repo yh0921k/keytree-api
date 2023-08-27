@@ -85,6 +85,21 @@ class ScheduleRepositoryTest {
     assertThat(foundSchedule.get()).isEqualTo(savedSchedule);
   }
 
+  @Test
+  @DisplayName("일정 아이디로 일정 엔티티 삭제")
+  void deleteById() {
+    // given
+    Schedule schedule = createSchedule();
+    Schedule savedSchedule = scheduleRepository.save(schedule);
+
+    // when
+    scheduleRepository.deleteById(savedSchedule.getId());
+    Optional<Schedule> deletedSchedule = scheduleRepository.findById(savedSchedule.getId());
+
+    // then
+    assertThat(deletedSchedule.isEmpty()).isTrue();
+  }
+
   private Schedule createSchedule() {
     LocalDateTime startedAt =
         LocalDateTime.parse(
