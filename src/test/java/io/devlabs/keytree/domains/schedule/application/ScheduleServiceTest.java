@@ -10,6 +10,7 @@ import io.devlabs.keytree.domains.schedule.domain.Schedule;
 import io.devlabs.keytree.domains.schedule.domain.ScheduleRepository;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -28,7 +29,7 @@ class ScheduleServiceTest {
   void createSchedule() {
     // given
     CreateScheduleRequest request = createScheduleRequest();
-    Schedule schedule = createScheduleEntity(request);
+    Schedule schedule = createScheduleEntity(1L, createScheduleRequest());
 
     when(scheduleRepository.save(any(Schedule.class))).thenReturn(schedule);
 
@@ -43,9 +44,29 @@ class ScheduleServiceTest {
     assertThat(response.getContents()).isEqualTo(schedule.getContents());
   }
 
-  private Schedule createScheduleEntity(CreateScheduleRequest request) {
+  @Test
+  @DisplayName("스케줄 리스트 조회")
+  void getSchedules() {
+    // given
+    Schedule firstSchedule = createScheduleEntity(1L, createScheduleRequest());
+    Schedule secondSchedule = createScheduleEntity(2L, createScheduleRequest());
+    List<Schedule> schedules = List.of(firstSchedule, secondSchedule);
+
+    when(scheduleRepository.findAll()).thenReturn(schedules);
+
+    // when
+    List<CreateScheduleResponse> foundSchedules = scheduleService.getSchedules();
+    List<Long> scheduleIds = foundSchedules.stream().map(CreateScheduleResponse::getId).toList();
+
+    // then
+    assertThat(foundSchedules.size()).isEqualTo(schedules.size());
+    assertThat(scheduleIds.contains(firstSchedule.getId())).isTrue();
+    assertThat(scheduleIds.contains(secondSchedule.getId())).isTrue();
+  }
+
+  private Schedule createScheduleEntity(Long scheduleId, CreateScheduleRequest request) {
     return Schedule.builder()
-        .id(1L)
+        .id(scheduleId)
         .startedAt(request.getStartedAt())
         .finishedAt(request.getFinishedAt())
         .title(request.getTitle())

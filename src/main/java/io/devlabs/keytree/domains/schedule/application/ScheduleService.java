@@ -4,6 +4,7 @@ import io.devlabs.keytree.domains.schedule.application.dto.CreateScheduleRequest
 import io.devlabs.keytree.domains.schedule.application.dto.CreateScheduleResponse;
 import io.devlabs.keytree.domains.schedule.domain.Schedule;
 import io.devlabs.keytree.domains.schedule.domain.ScheduleRepository;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,5 +34,22 @@ public class ScheduleService {
         .title(savedSchedule.getTitle())
         .contents(savedSchedule.getContents())
         .build();
+  }
+
+  @Transactional(readOnly = true)
+  public List<CreateScheduleResponse> getSchedules() {
+    List<Schedule> schedules = scheduleRepository.findAll();
+
+    return schedules.stream()
+        .map(
+            schedule ->
+                CreateScheduleResponse.builder()
+                    .id(schedule.getId())
+                    .startedAt(schedule.getStartedAt())
+                    .finishedAt(schedule.getFinishedAt())
+                    .title(schedule.getTitle())
+                    .contents(schedule.getContents())
+                    .build())
+        .toList();
   }
 }
