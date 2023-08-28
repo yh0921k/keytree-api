@@ -4,6 +4,7 @@ import io.devlabs.keytree.commons.jpa.BaseTimeEntity;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.hibernate.annotations.Comment;
 
@@ -20,14 +21,17 @@ public class Schedule extends BaseTimeEntity {
   private Long id;
 
   @Column
+  @NotNull
   @Comment("일정시작일시")
   private LocalDateTime startedAt;
 
   @Column
+  @NotNull
   @Comment("일정종료일시")
   private LocalDateTime finishedAt;
 
   @Column(length = 100)
+  @NotNull
   @Comment("일정 제목")
   private String title;
 
