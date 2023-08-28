@@ -1,0 +1,59 @@
+package io.devlabs.keytree.domains.user;
+
+import io.devlabs.keytree.commons.jpa.BaseTimeEntity;
+import jakarta.persistence.*;
+import java.time.LocalDateTime;
+
+import jakarta.validation.constraints.NotNull;
+import lombok.*;
+import org.hibernate.annotations.Comment;
+
+@Entity
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
+@Getter
+@Builder
+public class User extends BaseTimeEntity {
+
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Comment("사용자 아이디")
+  private Long id;
+
+  @Column
+  @NotNull
+  @Comment("근무시작일시")
+  private LocalDateTime startedAt;
+
+  @Column
+  @Comment("근무종료일시")
+  private LocalDateTime finishedAt;
+
+  @Column
+  @NotNull
+  @Comment("법인 계정 이메일 주소")
+  private String email;
+
+  @Column
+  @NotNull
+  @Comment("비밀번호")
+  private String password;
+
+  @Column
+  @NotNull
+  @Comment("이름")
+  private String name;
+
+  @Column
+  @NotNull
+  @Comment("연락처")
+  private String phone;
+
+  @Column
+  @Comment("주소")
+  private String address;
+
+  @Column
+  @Comment("법인 아이디")
+  private Long companyId;
+}

@@ -4,7 +4,9 @@ import io.devlabs.keytree.commons.jpa.BaseTimeEntity;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
+import org.hibernate.annotations.Comment;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -15,19 +17,30 @@ public class Schedule extends BaseTimeEntity {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Comment("일정 아이디")
   private Long id;
 
-  @Column private LocalDateTime startedAt;
+  @Column
+  @NotNull
+  @Comment("일정시작일시")
+  private LocalDateTime startedAt;
 
-  @Column private LocalDateTime finishedAt;
+  @Column
+  @NotNull
+  @Comment("일정종료일시")
+  private LocalDateTime finishedAt;
 
   @Column(length = 100)
+  @NotNull
+  @Comment("일정 제목")
   private String title;
 
   @Lob
   @Column(length = 3000)
+  @Comment("일정 내용")
   private String contents;
 
   @Column
+  @Comment("사용자 아이디")
   private Long userId;
 }
