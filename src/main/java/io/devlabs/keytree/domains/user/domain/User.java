@@ -35,7 +35,6 @@ public class User extends BaseTimeEntity {
   private String email;
 
   @Column
-  @NotNull
   @Comment("비밀번호")
   private String password;
 
