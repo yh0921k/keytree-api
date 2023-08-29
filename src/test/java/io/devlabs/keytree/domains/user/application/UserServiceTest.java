@@ -36,7 +36,7 @@ class UserServiceTest {
     CreateUserResponse response = userService.createUser(request);
 
     // then
-    assertThat(response.getId()).isGreaterThan(1L);
+    assertThat(response.getId()).isEqualTo(1L);
     assertThat(response.getStartedAt()).isEqualTo(user.getStartedAt());
     assertThat(response.getName()).isEqualTo(user.getName());
     assertThat(response.getPhone()).isEqualTo(user.getPhone());
