@@ -1,4 +1,4 @@
-package io.devlabs.keytree.domains.user;
+package io.devlabs.keytree.domains.user.domain;
 
 import io.devlabs.keytree.commons.jpa.BaseTimeEntity;
 import jakarta.persistence.*;
