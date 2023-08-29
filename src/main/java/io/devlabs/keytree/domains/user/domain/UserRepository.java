@@ -1,4 +1,4 @@
-package io.devlabs.keytree.domains.user;
+package io.devlabs.keytree.domains.user.domain;
 
 
 import org.springframework.data.jpa.repository.JpaRepository;

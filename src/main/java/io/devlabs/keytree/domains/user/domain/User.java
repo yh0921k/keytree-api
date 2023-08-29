@@ -1,4 +1,4 @@
-package io.devlabs.keytree.domains.user;
+package io.devlabs.keytree.domains.user.domain;
 
 import io.devlabs.keytree.commons.jpa.BaseTimeEntity;
 import jakarta.persistence.*;
@@ -35,7 +35,6 @@ public class User extends BaseTimeEntity {
   private String email;
 
   @Column
-  @NotNull
   @Comment("비밀번호")
   private String password;
 
