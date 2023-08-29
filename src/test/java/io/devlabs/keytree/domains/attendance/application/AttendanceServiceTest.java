@@ -1,5 +1,6 @@
 package io.devlabs.keytree.domains.attendance.application;
 
+import io.devlabs.keytree.domains.attendance.application.application.AttendanceService;
 import io.devlabs.keytree.domains.attendance.application.dto.CreateStartAttendanceRequest;
 import io.devlabs.keytree.domains.attendance.application.dto.CreateStartAttendanceResponse;
 import io.devlabs.keytree.domains.attendance.domain.Attendance;
