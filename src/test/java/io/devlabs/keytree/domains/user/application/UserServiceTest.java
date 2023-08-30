@@ -6,10 +6,13 @@ import static org.mockito.Mockito.when;
 
 import io.devlabs.keytree.domains.user.application.dto.CreateUserRequest;
 import io.devlabs.keytree.domains.user.application.dto.CreateUserResponse;
+import io.devlabs.keytree.domains.user.application.dto.ModifyUserRequest;
 import io.devlabs.keytree.domains.user.domain.User;
 import io.devlabs.keytree.domains.user.domain.UserRepository;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Optional;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -41,6 +44,33 @@ class UserServiceTest {
     assertThat(response.getName()).isEqualTo(user.getName());
     assertThat(response.getPhone()).isEqualTo(user.getPhone());
     assertThat(response.getEmail()).isEqualTo(user.getEmail());
+  }
+
+  @Test
+  @DisplayName("사용자 수정")
+  void modifyUser() {
+    // given
+    User user = createUser(1L, createUserRequest());
+    when(userRepository.findById(any(Long.class))).thenReturn(Optional.of(user));
+
+    // when
+    ModifyUserRequest modifyUserRequest = createModifyUserRequest();
+    CreateUserResponse response = userService.modifyUser(user.getId(), modifyUserRequest);
+
+    // then
+    assertThat(response.getId()).isEqualTo(1L);
+    assertThat(response.getStartedAt()).isEqualTo(modifyUserRequest.getStartedAt());
+    assertThat(response.getPhone()).isEqualTo(modifyUserRequest.getPhone());
+    assertThat(response.getAddress()).isEqualTo(modifyUserRequest.getAddress());
+  }
+
+  private ModifyUserRequest createModifyUserRequest() {
+    ModifyUserRequest request = new ModifyUserRequest();
+    request.setStartedAt(LocalDateTime.now());
+    request.setPhone("010-4321-4321");
+    request.setAddress("Modified Address");
+
+    return request;
   }
 
   private User createUser(Long id, CreateUserRequest request) {
