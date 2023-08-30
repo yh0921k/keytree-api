@@ -33,7 +33,7 @@ public class AttendanceServiceTest {
     void createStartAttendance() {
         // given
         CreateStartAttendanceRequest request = createStartAttendanceRequest();
-        Attendance attendance = createStartAttendanceEntity(createStartAttendanceRequest());
+        Attendance attendance = createStartAttendanceEntity(1L, createStartAttendanceRequest());
 
         when(attendanceRepository.save(any(Attendance.class))).thenReturn(attendance);
 
@@ -47,9 +47,9 @@ public class AttendanceServiceTest {
     }
 
 
-    private Attendance createStartAttendanceEntity(CreateStartAttendanceRequest request) {
+    private Attendance createStartAttendanceEntity(Long AttendanceId, CreateStartAttendanceRequest request) {
         return Attendance.builder()
-                .id(1L)
+                .id(AttendanceId)
                 .startedAt(request.getStartedAt())
                 .userId(request.getUserId())
                 .build();
