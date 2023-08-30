@@ -55,4 +55,11 @@ public class User extends BaseTimeEntity {
   @Column
   @Comment("법인 아이디")
   private Long companyId;
+
+  // TODO: 추후 유효성 검증 필요
+  public void modify(LocalDateTime startedAt, String phone, String address) {
+    this.startedAt = startedAt;
+    this.phone = phone;
+    this.address = address;
+  }
 }
