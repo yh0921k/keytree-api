@@ -1,6 +1,7 @@
 package io.devlabs.keytree.domains.attendance.presentation;
 
 import io.devlabs.keytree.domains.attendance.application.dto.CreateStartAttendanceRequest;
+import io.devlabs.keytree.domains.attendance.domain.AttendanceType;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
@@ -45,7 +46,7 @@ public class AttendanceControllerTest {
                         .body(requestBody)
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .when()
-                        .post("/start/attendances")
+                        .post("/attendances")
                         .then()
                         .log()
                         .all()
@@ -63,6 +64,7 @@ public class AttendanceControllerTest {
 
         CreateStartAttendanceRequest request = new CreateStartAttendanceRequest();
         request.setUserId(userId);
+        request.setAttendanceType(AttendanceType.START);
         request.setStartedAt(startedAt);
 
         return request;

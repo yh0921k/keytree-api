@@ -14,7 +14,7 @@ public class AttendanceController {
 
     private final AttendanceService attendanceService;
 
-    @PostMapping("/start/attendances")
+    @PostMapping("/attendances")
     public CreateStartAttendanceResponse createStartAttendance(@RequestBody CreateStartAttendanceRequest request) {
         return attendanceService.createStartAttendance(request);
     }
