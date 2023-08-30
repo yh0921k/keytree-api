@@ -31,6 +31,7 @@ public class UserService {
         .name(savedUser.getName())
         .phone(savedUser.getPhone())
         .email(savedUser.getEmail())
+        .address(savedUser.getAddress())
         .build();
   }
 }
