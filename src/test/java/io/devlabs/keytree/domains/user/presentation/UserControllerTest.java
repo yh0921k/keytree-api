@@ -1,7 +1,10 @@
 package io.devlabs.keytree.domains.user.presentation;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import io.devlabs.keytree.domains.user.application.UserService;
 import io.devlabs.keytree.domains.user.application.dto.CreateUserRequest;
+import io.devlabs.keytree.domains.user.application.dto.ModifyUserRequest;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
@@ -16,8 +19,6 @@ import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -55,6 +56,43 @@ class UserControllerTest {
     assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
   }
 
+  @Test
+  @DisplayName("사용자 수정 API")
+  public void modifyUser() {
+    // given
+    CreateUserRequest createUserRequest = createUserRequest();
+
+    ExtractableResponse<Response> createUserResponse =
+    RestAssured.given()
+        .body(createUserRequest)
+        .contentType(MediaType.APPLICATION_JSON_VALUE)
+        .when()
+        .post("/users")
+        .then()
+        .extract();
+
+    // when
+    ModifyUserRequest modifyUserRequest = createModifyUserRequest();
+    Long userId = createUserResponse.jsonPath().getLong("id");
+
+    ExtractableResponse<Response> modifyUserResponse =
+        RestAssured.given()
+            .log()
+            .all()
+            .pathParam("userId", userId)
+            .body(modifyUserRequest)
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .when()
+            .patch("/users/{userId}")
+            .then()
+            .log()
+            .all()
+            .extract();
+
+    // then
+    assertThat(modifyUserResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
+  }
+
   private CreateUserRequest createUserRequest() {
     LocalDateTime startedAt =
         LocalDateTime.parse(
@@ -65,6 +103,15 @@ class UserControllerTest {
     request.setName("KeyTree");
     request.setPhone("01011112222");
     request.setEmail("KeyTree");
+
+    return request;
+  }
+
+  private ModifyUserRequest createModifyUserRequest() {
+    ModifyUserRequest request = new ModifyUserRequest();
+    request.setStartedAt(LocalDateTime.now());
+    request.setPhone("010-4321-4321");
+    request.setAddress("Modified Address");
 
     return request;
   }
