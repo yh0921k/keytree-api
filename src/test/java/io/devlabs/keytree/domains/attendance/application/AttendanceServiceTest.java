@@ -47,9 +47,9 @@ public class AttendanceServiceTest {
     }
 
 
-    private Attendance createStartAttendanceEntity(Long AttendanceId, CreateStartAttendanceRequest request) {
+    private Attendance createStartAttendanceEntity(Long attendanceId, CreateStartAttendanceRequest request) {
         return Attendance.builder()
-                .id(AttendanceId)
+                .id(attendanceId)
                 .startedAt(request.getStartedAt())
                 .userId(request.getUserId())
                 .build();
