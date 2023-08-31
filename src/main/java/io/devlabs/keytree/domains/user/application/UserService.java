@@ -58,4 +58,21 @@ public class UserService {
         .address(user.getAddress())
         .build();
   }
+
+  @Transactional(readOnly = true)
+  public CreateUserResponse getUserById(Long id) {
+    User user =
+        userRepository
+            .findById(id)
+            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
+
+    return CreateUserResponse.builder()
+        .id(user.getId())
+        .startedAt(user.getStartedAt())
+        .name(user.getName())
+        .phone(user.getPhone())
+        .email(user.getEmail())
+        .address(user.getAddress())
+        .build();
+  }
 }
