@@ -1,7 +1,11 @@
 package io.devlabs.keytree.domains.user.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.AdditionalMatchers.not;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.when;
 
 import io.devlabs.keytree.domains.user.application.dto.CreateUserRequest;
@@ -12,7 +16,6 @@ import io.devlabs.keytree.domains.user.domain.UserRepository;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
-
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -62,6 +65,37 @@ class UserServiceTest {
     assertThat(response.getStartedAt()).isEqualTo(modifyUserRequest.getStartedAt());
     assertThat(response.getPhone()).isEqualTo(modifyUserRequest.getPhone());
     assertThat(response.getAddress()).isEqualTo(modifyUserRequest.getAddress());
+  }
+
+  @Test
+  @DisplayName("사용자 아이디로 단일 사용자 조회")
+  void getUserById() {
+    // given
+    User user = createUser(1L, createUserRequest());
+    when(userRepository.findById(any(Long.class))).thenReturn(Optional.of(user));
+
+    // when
+    CreateUserResponse response = userService.getUserById(user.getId());
+
+    // then
+    assertThat(response.getId()).isEqualTo(1L);
+    assertThat(response.getStartedAt()).isEqualTo(user.getStartedAt());
+    assertThat(response.getPhone()).isEqualTo(user.getPhone());
+    assertThat(response.getAddress()).isEqualTo(user.getAddress());
+  }
+
+  @Test
+  @DisplayName("사용자 아이디로 단일 사용자 조회시 아이디가 유효하지 않으면 IllegalArgumentException 발생")
+  void getUserByInvalidIdThrowsIllegalArgumentException() {
+    // given
+    User user = createUser(1L, createUserRequest());
+
+    doReturn(Optional.empty()).when(userRepository).findById(not(eq(user.getId())));
+
+    // when, then
+    assertThatThrownBy(() -> userService.getUserById(user.getId() + 1))
+        .isInstanceOf(IllegalArgumentException.class)
+        .hasMessage("존재하지 않는 사용자입니다.");
   }
 
   private ModifyUserRequest createModifyUserRequest() {
