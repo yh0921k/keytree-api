@@ -15,6 +15,7 @@ import io.devlabs.keytree.domains.user.domain.User;
 import io.devlabs.keytree.domains.user.domain.UserRepository;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -98,6 +99,26 @@ class UserServiceTest {
         .hasMessage("존재하지 않는 사용자입니다.");
   }
 
+  @Test
+  @DisplayName("사용자 리스트 조회")
+  void getSchedules() {
+    // given
+    User firstUser = createUser(1L, createUserRequest());
+    User secondUser = createUser(2L, createUserRequest());
+    List<User> users = List.of(firstUser, secondUser);
+
+    when(userRepository.findAll()).thenReturn(users);
+
+    // when
+    List<CreateUserResponse> foundUsers = userService.getUsers();
+    List<Long> userIds = foundUsers.stream().map(CreateUserResponse::getId).toList();
+
+    // then
+    assertThat(foundUsers.size()).isEqualTo(users.size());
+    assertThat(userIds.contains(firstUser.getId())).isTrue();
+    assertThat(userIds.contains(secondUser.getId())).isTrue();
+  }
+
   private ModifyUserRequest createModifyUserRequest() {
     ModifyUserRequest request = new ModifyUserRequest();
     request.setStartedAt(LocalDateTime.now());
@@ -111,7 +132,6 @@ class UserServiceTest {
     String invalidValue = "KeyTree";
     LocalDateTime now = LocalDateTime.now();
 
-
     return User.builder()
         .id(id)
         .startedAt(request.getStartedAt())
@@ -124,7 +144,6 @@ class UserServiceTest {
         .companyId(0L)
         .build();
   }
-
 
   private CreateUserRequest createUserRequest() {
     LocalDateTime startedAt =
