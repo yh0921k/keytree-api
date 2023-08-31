@@ -1,5 +1,6 @@
 package io.devlabs.keytree.domains.attendance.presentation;
 
+import io.devlabs.keytree.domains.attendance.application.application.AttendanceService;
 import io.devlabs.keytree.domains.attendance.application.dto.CreateStartAttendanceRequest;
 import io.devlabs.keytree.domains.attendance.domain.AttendanceType;
 import io.restassured.RestAssured;
@@ -8,6 +9,7 @@ import io.restassured.response.Response;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
@@ -23,6 +25,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class AttendanceControllerTest {
+
+
+    @Autowired
+    AttendanceService attendanceService;
 
     @LocalServerPort
     private int port;
@@ -54,6 +60,31 @@ public class AttendanceControllerTest {
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
+
+    @DisplayName("출근 목록 조회 API")
+    @Test
+    void getAttendance() {
+        // given
+        attendanceService.createStartAttendance(createStartAttendanceRequest());
+        attendanceService.createStartAttendance(createStartAttendanceRequest());
+
+        // when
+        ExtractableResponse<Response> response =
+                RestAssured.given()
+                        .log()
+                        .all()
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .when()
+                        .get("/attendances")
+                        .then()
+                        .log()
+                        .all()
+                        .extract();
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(response.body().jsonPath().getList("$").size()).isEqualTo(2);
     }
 
     private CreateStartAttendanceRequest createStartAttendanceRequest() {
