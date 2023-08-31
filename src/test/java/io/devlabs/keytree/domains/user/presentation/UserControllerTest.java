@@ -126,6 +126,31 @@ class UserControllerTest {
     assertThat(response.jsonPath().getString("address")).isEqualTo(foundUser.getAddress());
   }
 
+  @DisplayName("사용자 리스트 조회 API")
+  @Test
+  void getUsers() {
+    // given
+    userService.createUser(createUserRequest());
+    userService.createUser(createUserRequest());
+
+    // when
+    ExtractableResponse<Response> response =
+        RestAssured.given()
+            .log()
+            .all()
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .when()
+            .get("/users")
+            .then()
+            .log()
+            .all()
+            .extract();
+
+    // then
+    assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    assertThat(response.body().jsonPath().getList("$").size()).isEqualTo(2);
+  }
+
   private CreateUserRequest createUserRequest() {
     LocalDateTime startedAt =
         LocalDateTime.parse(

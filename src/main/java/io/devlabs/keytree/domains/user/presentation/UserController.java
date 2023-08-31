@@ -4,6 +4,7 @@ import io.devlabs.keytree.domains.user.application.UserService;
 import io.devlabs.keytree.domains.user.application.dto.CreateUserRequest;
 import io.devlabs.keytree.domains.user.application.dto.CreateUserResponse;
 import io.devlabs.keytree.domains.user.application.dto.ModifyUserRequest;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,5 +27,10 @@ public class UserController {
   @GetMapping("/users/{userId}")
   public CreateUserResponse getUserById(@PathVariable Long userId) {
     return userService.getUserById(userId);
+  }
+
+  @GetMapping("/users")
+  public List<CreateUserResponse> getUserById() {
+    return userService.getUsers();
   }
 }
