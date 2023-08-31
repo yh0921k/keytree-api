@@ -5,6 +5,7 @@ import io.devlabs.keytree.domains.user.application.dto.CreateUserResponse;
 import io.devlabs.keytree.domains.user.application.dto.ModifyUserRequest;
 import io.devlabs.keytree.domains.user.domain.User;
 import io.devlabs.keytree.domains.user.domain.UserRepository;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -74,5 +75,23 @@ public class UserService {
         .email(user.getEmail())
         .address(user.getAddress())
         .build();
+  }
+
+  @Transactional(readOnly = true)
+  public List<CreateUserResponse> getUsers() {
+    List<User> users = userRepository.findAll();
+
+    return users.stream()
+        .map(
+            user ->
+                CreateUserResponse.builder()
+                    .id(user.getId())
+                    .startedAt(user.getStartedAt())
+                    .name(user.getName())
+                    .phone(user.getPhone())
+                    .email(user.getEmail())
+                    .address(user.getAddress())
+                    .build())
+        .toList();
   }
 }
