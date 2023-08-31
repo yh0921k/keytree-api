@@ -22,4 +22,9 @@ public class UserController {
       @PathVariable Long userId, @RequestBody ModifyUserRequest request) {
     return userService.modifyUser(userId, request);
   }
+
+  @GetMapping("/users/{userId}")
+  public CreateUserResponse getUserById(@PathVariable Long userId) {
+    return userService.getUserById(userId);
+  }
 }

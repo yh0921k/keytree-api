@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import io.devlabs.keytree.domains.user.application.UserService;
 import io.devlabs.keytree.domains.user.application.dto.CreateUserRequest;
+import io.devlabs.keytree.domains.user.application.dto.CreateUserResponse;
 import io.devlabs.keytree.domains.user.application.dto.ModifyUserRequest;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
@@ -63,13 +64,13 @@ class UserControllerTest {
     CreateUserRequest createUserRequest = createUserRequest();
 
     ExtractableResponse<Response> createUserResponse =
-    RestAssured.given()
-        .body(createUserRequest)
-        .contentType(MediaType.APPLICATION_JSON_VALUE)
-        .when()
-        .post("/users")
-        .then()
-        .extract();
+        RestAssured.given()
+            .body(createUserRequest)
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .when()
+            .post("/users")
+            .then()
+            .extract();
 
     // when
     ModifyUserRequest modifyUserRequest = createModifyUserRequest();
@@ -91,6 +92,38 @@ class UserControllerTest {
 
     // then
     assertThat(modifyUserResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
+  }
+
+  @Test
+  @DisplayName("사용자 아이디로 사용자 상세 조회 API")
+  public void getUserById() {
+    // given
+    CreateUserResponse foundUser = userService.createUser(createUserRequest());
+
+    // when
+    ExtractableResponse<Response> response =
+        RestAssured.given()
+            .pathParam("userId", foundUser.getId())
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .log()
+            .all()
+            .when()
+            .get("/users/{userId}")
+            .then()
+            .log()
+            .all()
+            .extract();
+
+    // then
+    assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    assertThat(response.jsonPath().getLong("id")).isEqualTo(foundUser.getId());
+    assertThat(response.jsonPath().getString("startedAt"))
+        .isEqualTo(
+            foundUser.getStartedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+    assertThat(response.jsonPath().getString("email")).isEqualTo(foundUser.getEmail());
+    assertThat(response.jsonPath().getString("name")).isEqualTo(foundUser.getName());
+    assertThat(response.jsonPath().getString("phone")).isEqualTo(foundUser.getPhone());
+    assertThat(response.jsonPath().getString("address")).isEqualTo(foundUser.getAddress());
   }
 
   private CreateUserRequest createUserRequest() {
