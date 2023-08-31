@@ -56,8 +56,6 @@ public class AttendanceServiceTest {
         Attendance firstAttendance = createStartAttendanceEntity(1L, createStartAttendanceRequest());
         Attendance secondAttendance = createStartAttendanceEntity(2L, createStartAttendanceRequest());
         List<Attendance> attendances = List.of(firstAttendance, secondAttendance);
-        CreateStartAttendanceRequest request = createStartAttendanceRequest();
-        Attendance attendance = createStartAttendanceEntity(1L, createStartAttendanceRequest());
 
         when(attendanceRepository.findAll()).thenReturn(attendances);
 
