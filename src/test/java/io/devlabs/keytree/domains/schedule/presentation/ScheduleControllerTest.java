@@ -1,36 +1,49 @@
 package io.devlabs.keytree.domains.schedule.presentation;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
+import static org.springframework.restdocs.restassured.RestAssuredRestDocumentation.document;
+import static org.springframework.restdocs.restassured.RestAssuredRestDocumentation.documentationConfiguration;
 
 import io.devlabs.keytree.domains.schedule.application.ScheduleService;
 import io.devlabs.keytree.domains.schedule.application.dto.CreateScheduleRequest;
 import io.devlabs.keytree.domains.schedule.application.dto.CreateScheduleResponse;
 import io.restassured.RestAssured;
+import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import io.restassured.specification.RequestSpecification;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.restdocs.RestDocumentationContextProvider;
+import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.test.annotation.DirtiesContext;
 
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@ExtendWith(RestDocumentationExtension.class)
 class ScheduleControllerTest {
 
   @Autowired ScheduleService scheduleService;
 
   @LocalServerPort private int port;
 
+  private RequestSpecification spec;
+
   @BeforeEach
-  void setUp() {
+  void setUp(RestDocumentationContextProvider restDocumentation) {
     RestAssured.port = port;
+    this.spec =
+        new RequestSpecBuilder().addFilter(documentationConfiguration(restDocumentation)).build();
   }
 
   @DisplayName("일정 등록 API")
@@ -41,11 +54,14 @@ class ScheduleControllerTest {
 
     // when
     ExtractableResponse<Response> response =
-        RestAssured.given()
+        RestAssured.given(this.spec)
             .log()
             .all()
             .body(requestBody)
             .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .filter(
+                document(
+                    "index", preprocessRequest(prettyPrint()), preprocessResponse(prettyPrint())))
             .when()
             .post("/schedules")
             .then()
@@ -146,7 +162,8 @@ class ScheduleControllerTest {
     assertThat(removeScheduleResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
 
     // TODO: 현재 전역 예외 처리기가 구현되어 있지 않아, 500 상태를 그대로 검증하지만 추후 개선 필요
-    assertThat(getScheduleResponse.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+    assertThat(getScheduleResponse.statusCode())
+        .isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
   }
 
   private CreateScheduleRequest createScheduleRequest() {
