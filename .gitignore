@@ -1,6 +1,9 @@
 # Created by https://www.toptal.com/developers/gitignore/api/macos,intellij,java,gradle,git
 # Edit at https://www.toptal.com/developers/gitignore?templates=macos,intellij,java,gradle,git
 
+### RestDocs ###
+src/main/resources/static/docs/index.html
+
 ### Git ###
 # Created by git for backups. To disable backups in Git:
 # $ git config --global mergetool.keepBackup false
