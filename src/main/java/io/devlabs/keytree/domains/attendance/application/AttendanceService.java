@@ -1,4 +1,4 @@
-package io.devlabs.keytree.domains.attendance.application.application;
+package io.devlabs.keytree.domains.attendance.application;
 
 import io.devlabs.keytree.domains.attendance.application.dto.CreateFinishAttendanceRequest;
 import io.devlabs.keytree.domains.attendance.application.dto.CreateFinishAttendanceResponse;
