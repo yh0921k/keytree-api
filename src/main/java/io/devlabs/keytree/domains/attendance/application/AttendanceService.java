@@ -70,4 +70,18 @@ public class AttendanceService {
                                         .build())
                 .toList();
     }
+
+    @Transactional(readOnly = true)
+    public CreateFinishAttendanceResponse getAttendanceById(Long attendanceId) {
+        Attendance attendance = attendanceRepository
+                .findById(attendanceId)
+                .orElseThrow(() -> new IllegalArgumentException("유효하지 않은 출석입니다."));
+
+        return CreateFinishAttendanceResponse.builder()
+                .id(attendance.getId())
+                .userId(attendance.getUserId())
+                .startedAt(attendance.getStartedAt())
+                .finishedAt(attendance.getFinishedAt())
+                .build();
+    }
 }
