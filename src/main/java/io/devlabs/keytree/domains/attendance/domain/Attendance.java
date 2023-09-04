@@ -34,4 +34,8 @@ public class Attendance extends BaseTimeEntity {
     @NotNull
     @Comment("퇴근 일시")
     private LocalDateTime finishedAt;
+
+    public void finish(LocalDateTime finishedAt) {
+        this.finishedAt = finishedAt;
+    }
 }
