@@ -85,6 +85,24 @@ public class AttendanceServiceTest {
         assertThat(attendanceIds.contains(secondAttendance.getId())).isTrue();
     }
 
+    @Test
+    @DisplayName("출석 아이디로 단일 출석 조회")
+    void getAttendanceById() {
+        // given
+        Attendance startAttendance = createStartAttendanceEntity(1L, createStartAttendanceRequest());
+        Attendance finishAttendance = createFinishAttendanceEntity(startAttendance.getId(), createFinishAttendanceRequest());
+        when(attendanceRepository.findById(any(Long.class))).thenReturn(Optional.of(finishAttendance));
+
+        // when
+        CreateFinishAttendanceResponse response = attendanceService.getAttendanceById(finishAttendance.getId());
+
+        // then
+        assertThat(response.getId()).isEqualTo(1L);
+        assertThat(response.getUserId()).isEqualTo(finishAttendance.getUserId());
+        assertThat(response.getStartedAt()).isEqualTo(finishAttendance.getStartedAt());
+        assertThat(response.getFinishedAt()).isEqualTo(finishAttendance.getFinishedAt());
+    }
+
     private Attendance createStartAttendanceEntity(Long attendanceId, CreateStartAttendanceRequest request) {
         return Attendance.builder()
                 .id(attendanceId)

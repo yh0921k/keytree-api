@@ -26,9 +26,13 @@ public class AttendanceController {
         return attendanceService.createFinishAttendance(attendanceId, request);
     }
 
-
     @GetMapping("/attendances")
     public List<CreateFinishAttendanceResponse> getAttendances() {
         return attendanceService.getAttendances();
+    }
+
+    @GetMapping("/attendances/{attendanceId}")
+    public CreateFinishAttendanceResponse getAttendanceById(@PathVariable Long attendanceId) {
+        return attendanceService.getAttendanceById(attendanceId);
     }
 }

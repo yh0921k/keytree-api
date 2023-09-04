@@ -2,7 +2,9 @@ package io.devlabs.keytree.domains.attendance.presentation;
 
 import io.devlabs.keytree.domains.attendance.application.AttendanceService;
 import io.devlabs.keytree.domains.attendance.application.dto.CreateFinishAttendanceRequest;
+import io.devlabs.keytree.domains.attendance.application.dto.CreateFinishAttendanceResponse;
 import io.devlabs.keytree.domains.attendance.application.dto.CreateStartAttendanceRequest;
+import io.devlabs.keytree.domains.attendance.application.dto.CreateStartAttendanceResponse;
 import io.devlabs.keytree.domains.attendance.domain.AttendanceType;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
@@ -124,6 +126,39 @@ public class AttendanceControllerTest {
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(response.body().jsonPath().getList("$").size()).isEqualTo(2);
+    }
+
+    @DisplayName("출석 상세 API")
+    @Test
+    void getAttendanceById() {
+        // given
+        CreateStartAttendanceResponse foundStartAttendance = attendanceService.createStartAttendance(createStartAttendanceRequest());
+        CreateFinishAttendanceResponse foundFinishAttendance = attendanceService.createFinishAttendance(foundStartAttendance.getId(), createFinishAttendanceRequest());
+
+        // when
+        ExtractableResponse<Response> response =
+                RestAssured.given()
+                        .pathParam("attendanceId", foundStartAttendance.getId())
+                        .log()
+                        .all()
+                        .when()
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .get("/attendances/{attendanceId}")
+                        .then()
+                        .log()
+                        .all()
+                        .extract();
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(response.jsonPath().getLong("id")).isEqualTo(foundStartAttendance.getId());
+        assertThat(response.jsonPath().getLong("userId")).isEqualTo(foundStartAttendance.getUserId());
+        assertThat(response.jsonPath().getString("startedAt"))
+                .isEqualTo(
+                        foundStartAttendance.getStartedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+        assertThat(response.jsonPath().getString("finishedAt"))
+                .isEqualTo(
+                        foundFinishAttendance.getFinishedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
     }
 
     private CreateStartAttendanceRequest createStartAttendanceRequest() {
