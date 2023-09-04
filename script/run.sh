@@ -3,8 +3,6 @@
 cd ..
 PROJECT_ROOT=`pwd`
 GRADLE_PATH="$PROJECT_ROOT/gradlew"
-JAR_FILE=$(find "$PROJECT_ROOT/build/libs" -type f -name "keytree*.jar" | head -n 1)
-
 if [ -f "$GRADLE_PATH" ]; then
     chmod +x "$GRADLE_PATH"
     $GRADLE_PATH clean bootJar
@@ -19,6 +17,7 @@ if [ ! -z "$PID" ]; then
     kill -9 $PID
 fi
 
+JAR_FILE=$(find "$PROJECT_ROOT/build/libs" -type f -name "keytree*.jar" | head -n 1)
 if [ -f "$JAR_FILE" ]; then
     java -jar $JAR_FILE
 else
