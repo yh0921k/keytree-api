@@ -1,6 +1,7 @@
 package io.devlabs.keytree.domains.attendance.presentation;
 
-import io.devlabs.keytree.domains.attendance.application.application.AttendanceService;
+import io.devlabs.keytree.domains.attendance.application.AttendanceService;
+import io.devlabs.keytree.domains.attendance.application.dto.CreateFinishAttendanceRequest;
 import io.devlabs.keytree.domains.attendance.application.dto.CreateStartAttendanceRequest;
 import io.devlabs.keytree.domains.attendance.domain.AttendanceType;
 import io.restassured.RestAssured;
@@ -62,6 +63,44 @@ public class AttendanceControllerTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
+    @DisplayName("퇴근 등록 API")
+    @Test
+    void createFinishAttendance() {
+        // given
+        CreateStartAttendanceRequest createStartRequest = createStartAttendanceRequest();
+
+        ExtractableResponse<Response> createStartAttendanceResponse =
+                RestAssured.given()
+                        .body(createStartRequest)
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .when()
+                        .post("/attendances")
+                        .then()
+                        .extract();
+
+        // when
+        CreateFinishAttendanceRequest requestBody = createFinishAttendanceRequest();
+        Long attendanceId = createStartAttendanceResponse.jsonPath().getLong("id");
+
+
+        ExtractableResponse<Response> response =
+                RestAssured.given()
+                        .pathParam("attendanceId", attendanceId)
+                        .log()
+                        .all()
+                        .body(requestBody)
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .when()
+                        .patch("/attendances/{attendanceId}")
+                        .then()
+                        .log()
+                        .all()
+                        .extract();
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
+
     @DisplayName("출근 목록 조회 API")
     @Test
     void getAttendance() {
@@ -97,6 +136,17 @@ public class AttendanceControllerTest {
         request.setUserId(userId);
         request.setAttendanceType(AttendanceType.START);
         request.setStartedAt(startedAt);
+
+        return request;
+    }
+
+    private CreateFinishAttendanceRequest createFinishAttendanceRequest() {
+        LocalDateTime finishedAt =
+                LocalDateTime.parse(
+                        "2023-08-29 00:00:00", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+
+        CreateFinishAttendanceRequest request = new CreateFinishAttendanceRequest();
+        request.setFinishedAt(finishedAt);
 
         return request;
     }
