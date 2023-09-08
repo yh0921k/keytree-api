@@ -107,14 +107,14 @@ class UserServiceTest {
     when(userRepository.findByEmail(any(String.class))).thenReturn(Optional.of(user));
 
     // when
-    CreateUserResponse response = userService.getUserByEmail(user.getEmail());
+    User foundUser = userService.getUserByEmail(user.getEmail());
 
     // then
-    assertThat(response.getId()).isEqualTo(1L);
-    assertThat(response.getStartedAt()).isEqualTo(user.getStartedAt());
-    assertThat(response.getEmail()).isEqualTo(user.getEmail());
-    assertThat(response.getPhone()).isEqualTo(user.getPhone());
-    assertThat(response.getAddress()).isEqualTo(user.getAddress());
+    assertThat(foundUser.getId()).isEqualTo(1L);
+    assertThat(foundUser.getStartedAt()).isEqualTo(user.getStartedAt());
+    assertThat(foundUser.getEmail()).isEqualTo(user.getEmail());
+    assertThat(foundUser.getPhone()).isEqualTo(user.getPhone());
+    assertThat(foundUser.getAddress()).isEqualTo(user.getAddress());
   }
 
   @Test
