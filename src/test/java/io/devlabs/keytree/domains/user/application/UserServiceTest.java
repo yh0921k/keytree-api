@@ -100,6 +100,38 @@ class UserServiceTest {
   }
 
   @Test
+  @DisplayName("사용자 이메일로 단일 사용자 조회")
+  void getUserByEmail() {
+    // given
+    User user = createUser(1L, createUserRequest());
+    when(userRepository.findByEmail(any(String.class))).thenReturn(Optional.of(user));
+
+    // when
+    CreateUserResponse response = userService.getUserByEmail(user.getEmail());
+
+    // then
+    assertThat(response.getId()).isEqualTo(1L);
+    assertThat(response.getStartedAt()).isEqualTo(user.getStartedAt());
+    assertThat(response.getEmail()).isEqualTo(user.getEmail());
+    assertThat(response.getPhone()).isEqualTo(user.getPhone());
+    assertThat(response.getAddress()).isEqualTo(user.getAddress());
+  }
+
+  @Test
+  @DisplayName("사용자 이메일로 사용자 엔티티 조회가 불가능한 경우 IllegalArgumentException 발생")
+  void getUserByInvalidEmailThrowsIllegalArgumentException() {
+    // given
+    User user = createUser(1L, createUserRequest());
+
+    doReturn(Optional.empty()).when(userRepository).findByEmail(not(eq(user.getEmail())));
+
+    // when, then
+    assertThatThrownBy(() -> userService.getUserByEmail("invalid_email@gmail.com"))
+        .isInstanceOf(IllegalArgumentException.class)
+        .hasMessage("존재하지 않는 사용자입니다.");
+  }
+
+  @Test
   @DisplayName("사용자 리스트 조회")
   void getSchedules() {
     // given
@@ -154,7 +186,7 @@ class UserServiceTest {
     request.setStartedAt(startedAt);
     request.setName("KeyTree");
     request.setPhone("01011112222");
-    request.setEmail("KeyTree");
+    request.setEmail("keytree@gmail.com");
 
     return request;
   }
