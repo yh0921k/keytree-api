@@ -15,7 +15,7 @@ public class CompanyAccount extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Comment("회사 계정 고유 아이디")
+    @Comment("기업 계정 고유 아이디")
     private Long id;
 
     @Column
