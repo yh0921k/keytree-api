@@ -8,6 +8,8 @@ import lombok.Setter;
 @Getter
 @Setter
 public class CreateScheduleRequest {
+  private Long userId;
+
   @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
   private LocalDateTime startedAt;
 

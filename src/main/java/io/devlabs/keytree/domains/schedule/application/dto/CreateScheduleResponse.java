@@ -12,6 +12,8 @@ import lombok.*;
 public class CreateScheduleResponse {
   private Long id;
 
+  private Long userId;
+
   @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
   private LocalDateTime startedAt;
 
