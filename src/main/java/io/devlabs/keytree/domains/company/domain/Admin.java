@@ -11,7 +11,7 @@ import org.hibernate.annotations.Comment;
 @AllArgsConstructor
 @Getter
 @Builder
-public class CompanyAccount extends BaseTimeEntity {
+public class Admin extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
