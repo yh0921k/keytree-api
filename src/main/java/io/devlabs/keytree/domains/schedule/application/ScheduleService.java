@@ -19,6 +19,7 @@ public class ScheduleService {
   public CreateScheduleResponse createSchedule(CreateScheduleRequest request) {
     Schedule schedule =
         Schedule.builder()
+            .userId(request.getUserId())
             .startedAt(request.getStartedAt())
             .finishedAt(request.getFinishedAt())
             .title(request.getTitle())
@@ -29,6 +30,7 @@ public class ScheduleService {
 
     return CreateScheduleResponse.builder()
         .id(savedSchedule.getId())
+        .userId(savedSchedule.getUserId())
         .startedAt(savedSchedule.getStartedAt())
         .finishedAt(savedSchedule.getFinishedAt())
         .title(savedSchedule.getTitle())
@@ -45,6 +47,7 @@ public class ScheduleService {
             schedule ->
                 CreateScheduleResponse.builder()
                     .id(schedule.getId())
+                    .userId(schedule.getUserId())
                     .startedAt(schedule.getStartedAt())
                     .finishedAt(schedule.getFinishedAt())
                     .title(schedule.getTitle())
@@ -61,6 +64,7 @@ public class ScheduleService {
 
     return CreateScheduleResponse.builder()
         .id(schedule.getId())
+        .userId(schedule.getUserId())
         .startedAt(schedule.getStartedAt())
         .finishedAt(schedule.getFinishedAt())
         .title(schedule.getTitle())

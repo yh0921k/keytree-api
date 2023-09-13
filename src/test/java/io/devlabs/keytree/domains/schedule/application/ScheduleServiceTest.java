@@ -42,6 +42,7 @@ class ScheduleServiceTest {
 
     // then
     assertThat(response.getId()).isEqualTo(1L);
+    assertThat(response.getUserId()).isEqualTo(schedule.getUserId());
     assertThat(response.getStartedAt()).isEqualTo(schedule.getStartedAt());
     assertThat(response.getFinishedAt()).isEqualTo(schedule.getFinishedAt());
     assertThat(response.getTitle()).isEqualTo(schedule.getTitle());
@@ -80,6 +81,7 @@ class ScheduleServiceTest {
 
     // then
     assertThat(response.getId()).isEqualTo(schedule.getId());
+    assertThat(response.getUserId()).isEqualTo(schedule.getUserId());
     assertThat(response.getStartedAt()).isEqualTo(schedule.getStartedAt());
     assertThat(response.getFinishedAt()).isEqualTo(schedule.getFinishedAt());
     assertThat(response.getTitle()).isEqualTo(schedule.getTitle());
@@ -130,6 +132,7 @@ class ScheduleServiceTest {
             "2023-08-27 00:00:00", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
 
     CreateScheduleRequest request = new CreateScheduleRequest();
+    request.setUserId(1L);
     request.setStartedAt(startedAt);
     request.setFinishedAt(finishedAt);
     request.setTitle("Title");
