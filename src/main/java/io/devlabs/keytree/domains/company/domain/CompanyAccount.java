@@ -35,6 +35,7 @@ public class CompanyAccount extends BaseTimeEntity {
 
     @Column
     @NotNull
+    @Enumerated(EnumType.STRING)
     @Comment("권한")
-    private Authority authority;
+    private UserRole authority;
 }
