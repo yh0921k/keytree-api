@@ -2,6 +2,7 @@ package io.devlabs.keytree.commons.redis;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.Optional;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -32,9 +33,12 @@ class RedissonUtilsTest {
 
     // when
     redissonUtils.setValue(key, value);
-    String foundValue = redissonUtils.getValue(key);
+    Optional<String> optionalValue = redissonUtils.getValue(key);
 
     // then
+    assertThat(optionalValue.isPresent()).isTrue();
+
+    String foundValue = optionalValue.get();
     assertThat(foundValue).isNotNull();
     assertThat(foundValue).isEqualTo(value);
   }

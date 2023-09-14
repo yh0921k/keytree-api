@@ -1,5 +1,6 @@
 package io.devlabs.keytree.commons.redis;
 
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.redisson.api.RedissonClient;
 import org.springframework.stereotype.Component;
@@ -14,7 +15,8 @@ public class RedissonUtils {
     redissonClient.getBucket(key).set(value);
   }
 
-  public String getValue(String key) {
-    return (String) redissonClient.getBucket(key).get();
+  public Optional<String> getValue(String key) {
+    String value = (String) redissonClient.getBucket(key).get();
+    return Optional.ofNullable(value);
   }
 }

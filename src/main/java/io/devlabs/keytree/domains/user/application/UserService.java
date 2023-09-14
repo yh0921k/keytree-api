@@ -96,16 +96,9 @@ public class UserService {
   }
 
   @Transactional(readOnly = true)
-  public CreateUserResponse getUserByEmail(String email) {
-    User user = userRepository.findByEmail(email).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
-
-    return CreateUserResponse.builder()
-        .id(user.getId())
-        .startedAt(user.getStartedAt())
-        .name(user.getName())
-        .phone(user.getPhone())
-        .email(user.getEmail())
-        .address(user.getAddress())
-        .build();
+  public User getUserByEmail(String email) {
+    return userRepository
+        .findByEmail(email)
+        .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
   }
 }
