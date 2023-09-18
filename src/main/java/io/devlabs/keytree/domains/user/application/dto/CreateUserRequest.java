@@ -1,6 +1,7 @@
 package io.devlabs.keytree.domains.user.application.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import io.devlabs.keytree.domains.auth.domain.UserRole;
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -18,4 +19,6 @@ public class CreateUserRequest {
   private String email;
   private String name;
   private String phone;
+  private UserRole userRole;
+
 }

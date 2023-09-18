@@ -1,6 +1,7 @@
 package io.devlabs.keytree.domains.user.domain;
 
 import io.devlabs.keytree.commons.jpa.BaseTimeEntity;
+import io.devlabs.keytree.domains.auth.domain.UserRole;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
@@ -51,6 +52,10 @@ public class User extends BaseTimeEntity {
   @Column
   @Comment("주소")
   private String address;
+
+  @Enumerated(EnumType.STRING)
+  @Comment("권한")
+  private UserRole userRole;
 
   @Column
   @Comment("법인 아이디")

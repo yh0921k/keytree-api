@@ -2,6 +2,7 @@ package io.devlabs.keytree.domains.user.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import io.devlabs.keytree.domains.auth.domain.UserRole;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
@@ -39,6 +40,7 @@ class UserRepositoryTest {
         .password("Devlabs1111!")
         .name("devlabs")
         .phone("010-1111-2222")
+        .userRole(UserRole.USER)
         .build();
   }
 }
