@@ -36,6 +36,7 @@ public class AuthService {
         .phone(user.getPhone())
         .email(user.getEmail())
         .address(user.getAddress())
+        .userRole(user.getUserRole())
         .build();
   }
 }

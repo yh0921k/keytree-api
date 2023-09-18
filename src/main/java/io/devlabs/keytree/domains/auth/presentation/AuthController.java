@@ -23,10 +23,12 @@ public class AuthController {
     request.getSession().invalidate();
 
     HttpSession createdSession = request.getSession(true);
+    CreateUserResponse responseData = authService.signIn(signInUserRequest, createdSession.getId());
+
     createdSession.setAttribute("email", signInUserRequest.getEmail());
+    createdSession.setAttribute("userRole", responseData.getUserRole());
     createdSession.setMaxInactiveInterval(3600);
 
-    CreateUserResponse responseData = authService.signIn(signInUserRequest, createdSession.getId());
     return ResponseEntity.ok(responseData);
   }
 }
