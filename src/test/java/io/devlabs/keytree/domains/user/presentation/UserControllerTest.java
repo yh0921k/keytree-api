@@ -5,11 +5,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 import io.devlabs.keytree.domains.user.application.UserService;
 import io.devlabs.keytree.domains.user.application.dto.CreateUserRequest;
 import io.devlabs.keytree.domains.user.application.dto.CreateUserResponse;
+import io.devlabs.keytree.domains.user.application.dto.GenerateCreateUserRequest;
+import io.devlabs.keytree.domains.user.application.dto.GenerateModifyUserRequest;
 import io.devlabs.keytree.domains.user.application.dto.ModifyUserRequest;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -37,7 +38,7 @@ class UserControllerTest {
   @DisplayName("사용자 등록 API")
   public void createUser() {
     // given
-    CreateUserRequest request = createUserRequest();
+    CreateUserRequest request = GenerateCreateUserRequest.generate();
 
     // when
     ExtractableResponse<Response> response =
@@ -61,7 +62,7 @@ class UserControllerTest {
   @DisplayName("사용자 수정 API")
   public void modifyUser() {
     // given
-    CreateUserRequest createUserRequest = createUserRequest();
+    CreateUserRequest createUserRequest = GenerateCreateUserRequest.generate();
 
     ExtractableResponse<Response> createUserResponse =
         RestAssured.given()
@@ -73,7 +74,7 @@ class UserControllerTest {
             .extract();
 
     // when
-    ModifyUserRequest modifyUserRequest = createModifyUserRequest();
+    ModifyUserRequest modifyUserRequest = GenerateModifyUserRequest.generate();
     Long userId = createUserResponse.jsonPath().getLong("id");
 
     ExtractableResponse<Response> modifyUserResponse =
@@ -98,7 +99,7 @@ class UserControllerTest {
   @DisplayName("사용자 아이디로 사용자 상세 조회 API")
   public void getUserById() {
     // given
-    CreateUserResponse foundUser = userService.createUser(createUserRequest());
+    CreateUserResponse foundUser = userService.createUser(GenerateCreateUserRequest.generate());
 
     // when
     ExtractableResponse<Response> response =
@@ -130,8 +131,8 @@ class UserControllerTest {
   @Test
   void getUsers() {
     // given
-    userService.createUser(createUserRequest());
-    userService.createUser(createUserRequest());
+    userService.createUser(GenerateCreateUserRequest.generate());
+    userService.createUser(GenerateCreateUserRequest.generate());
 
     // when
     ExtractableResponse<Response> response =
@@ -149,28 +150,5 @@ class UserControllerTest {
     // then
     assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     assertThat(response.body().jsonPath().getList("$").size()).isEqualTo(2);
-  }
-
-  private CreateUserRequest createUserRequest() {
-    LocalDateTime startedAt =
-        LocalDateTime.parse(
-            "2023-08-27 00:00:00", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-
-    CreateUserRequest request = new CreateUserRequest();
-    request.setStartedAt(startedAt);
-    request.setName("KeyTree");
-    request.setPhone("01011112222");
-    request.setEmail("KeyTree");
-
-    return request;
-  }
-
-  private ModifyUserRequest createModifyUserRequest() {
-    ModifyUserRequest request = new ModifyUserRequest();
-    request.setStartedAt(LocalDateTime.now());
-    request.setPhone("010-4321-4321");
-    request.setAddress("Modified Address");
-
-    return request;
   }
 }
