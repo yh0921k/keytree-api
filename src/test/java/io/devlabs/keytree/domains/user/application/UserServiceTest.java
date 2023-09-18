@@ -8,6 +8,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.when;
 
+import io.devlabs.keytree.domains.auth.domain.UserRole;
 import io.devlabs.keytree.domains.user.application.dto.CreateUserRequest;
 import io.devlabs.keytree.domains.user.application.dto.CreateUserResponse;
 import io.devlabs.keytree.domains.user.application.dto.GenerateCreateUserRequest;
@@ -49,6 +50,7 @@ class UserServiceTest {
     assertThat(response.getName()).isEqualTo(user.getName());
     assertThat(response.getPhone()).isEqualTo(user.getPhone());
     assertThat(response.getEmail()).isEqualTo(user.getEmail());
+    assertThat(response.getUserRole()).isEqualTo(user.getUserRole());
   }
 
   @Test
@@ -67,6 +69,7 @@ class UserServiceTest {
     assertThat(response.getStartedAt()).isEqualTo(modifyUserRequest.getStartedAt());
     assertThat(response.getPhone()).isEqualTo(modifyUserRequest.getPhone());
     assertThat(response.getAddress()).isEqualTo(modifyUserRequest.getAddress());
+    assertThat(response.getUserRole()).isEqualTo(user.getUserRole());
   }
 
   @Test
@@ -84,6 +87,7 @@ class UserServiceTest {
     assertThat(response.getStartedAt()).isEqualTo(user.getStartedAt());
     assertThat(response.getPhone()).isEqualTo(user.getPhone());
     assertThat(response.getAddress()).isEqualTo(user.getAddress());
+    assertThat(response.getUserRole()).isEqualTo(user.getUserRole());
   }
 
   @Test
@@ -116,6 +120,7 @@ class UserServiceTest {
     assertThat(foundUser.getEmail()).isEqualTo(user.getEmail());
     assertThat(foundUser.getPhone()).isEqualTo(user.getPhone());
     assertThat(foundUser.getAddress()).isEqualTo(user.getAddress());
+    assertThat(foundUser.getUserRole()).isEqualTo(user.getUserRole());
   }
 
   @Test
@@ -165,6 +170,7 @@ class UserServiceTest {
         .name(request.getName())
         .phone(request.getPhone())
         .address(invalidValue)
+        .userRole(UserRole.USER)
         .companyId(0L)
         .build();
   }
