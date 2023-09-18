@@ -15,27 +15,27 @@ public class Admin extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Comment("기업 계정 고유 아이디")
+    @Comment("관리자 아이디")
     private Long id;
 
     @Column
     @NotNull
-    @Comment("계정 이름")
+    @Comment("이름")
     private String name;
 
     @Column
     @NotNull
-    @Comment("로그인 아이디")
-    private String loginId;
+    @Comment("이메일")
+    private String email;
 
     @Column
     @NotNull
-    @Comment("로그인 비밀번호")
+    @Comment("비밀번호")
     private String password;
 
     @Column
     @NotNull
     @Enumerated(EnumType.STRING)
-    @Comment("권한")
-    private UserRole authority;
+    @Comment("관리자 권한")
+    private UserRole userRole;
 }
