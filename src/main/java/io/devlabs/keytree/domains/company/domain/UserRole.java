@@ -2,9 +2,8 @@ package io.devlabs.keytree.domains.company.domain;
 
 public enum UserRole {
     MASTER("MASTER"),
-    ADMIN("ROLE_ADMIN"),
-    USER("ROLE_USER")
-    ;
+    ADMIN("ADMIN"),
+    USER("USER");
 
     private final String authority;
 
