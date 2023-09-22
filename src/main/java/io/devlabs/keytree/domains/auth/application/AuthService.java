@@ -11,6 +11,7 @@ import io.devlabs.keytree.domains.user.domain.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import jakarta.servlet.http.HttpServletRequest;
 
 @Service
 @RequiredArgsConstructor
@@ -38,4 +39,10 @@ public class AuthService {
         .address(user.getAddress())
         .build();
   }
+    @Transactional
+    public String logout(HttpServletRequest request) {
+        request.getSession().invalidate();
+        request.getSession(true);
+        return "로그아웃에 성공했습니다.";
+    }
 }

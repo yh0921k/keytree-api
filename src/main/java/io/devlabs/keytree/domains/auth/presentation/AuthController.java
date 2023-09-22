@@ -29,4 +29,9 @@ public class AuthController {
     CreateUserResponse responseData = authService.signIn(signInUserRequest, createdSession.getId());
     return ResponseEntity.ok(responseData);
   }
+
+  @PostMapping("/logout")
+  public String logout (HttpServletRequest request) {
+    return authService.logout(request);
+  }
 }
