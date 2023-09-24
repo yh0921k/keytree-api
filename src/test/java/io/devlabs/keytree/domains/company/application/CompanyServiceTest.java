@@ -9,16 +9,10 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
-import java.util.List;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.AdditionalMatchers.not;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
-import static org.mockito.Mockito.times;
 
 public class CompanyServiceTest {
 
@@ -59,7 +53,7 @@ public class CompanyServiceTest {
     private CreateCompanyRequest createCompanyRequest() {
         CreateCompanyRequest request = new CreateCompanyRequest();
         request.setName("A기업");
-        request.setAddress("서울특별시");
+        request.setAddress("서울특별시 강남구");
         request.setPhone("010-1111-1111");
 
         return request;
