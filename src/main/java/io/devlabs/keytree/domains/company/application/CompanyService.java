@@ -8,6 +8,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class CompanyService {
@@ -31,6 +33,22 @@ public class CompanyService {
                 .address(savedCompany.getAddress())
                 .phone(savedCompany.getPhone())
                 .build();
+    }
+
+    @Transactional(readOnly = true)
+    public List<CreateCompanyResponse> getCompanies() {
+        List<Company> companies = companyRepository.findAll();
+
+        return companies.stream()
+            .map(
+                company ->
+                    CreateCompanyResponse.builder()
+                        .id(company.getId())
+                        .name(company.getName())
+                        .address(company.getAddress())
+                        .phone(company.getPhone())
+                        .build())
+            .toList();
     }
 
 }
