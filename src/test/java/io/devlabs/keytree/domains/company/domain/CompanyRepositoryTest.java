@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
@@ -34,6 +36,24 @@ public class CompanyRepositoryTest {
     assertThat(savedCompany.getName()).isEqualTo(company.getName());
     assertThat(savedCompany.getPhone()).isEqualTo(company.getPhone());
     assertThat(savedCompany.getAddress()).isEqualTo(company.getAddress());
+  }
+
+  @Test
+  @DisplayName("기업 엔티티 리스트 조회")
+  void findAll() {
+    // given
+    Company firstCompany = createCompany();
+    Company secondCompany = createCompany();
+    companyRepository.saveAll(List.of(firstCompany, secondCompany));
+
+    // when
+    List<Company> companies = companyRepository.findAll();
+    List<Long> companyIds = companies.stream().map(Company::getId).toList();
+
+    // then
+    assertThat(companies.size()).isEqualTo(2);
+    assertThat(companyIds.contains(1L)).isTrue();
+    assertThat(companyIds.contains(2L)).isTrue();
   }
 
   private Company createCompany() {
