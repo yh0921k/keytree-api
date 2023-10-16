@@ -79,6 +79,34 @@ public class CompanyControllerTest {
     assertThat(response.body().jsonPath().getList("$").size()).isEqualTo(2);
   }
 
+  @DisplayName("기업 인덱스로 상세 조회 API")
+  @Test
+  void getCompanyById() {
+    // given
+    CreateCompanyResponse company = companyService.createCompany(createCompanyRequest());
+
+    // when
+    ExtractableResponse<Response> response =
+        RestAssured.given()
+            .pathParam("companyId", company.getId())
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .log()
+            .all()
+            .when()
+            .get("/companies/{companyId}")
+            .then()
+            .log()
+            .all()
+            .extract();
+
+    // then
+    assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    assertThat(response.body().jsonPath().getLong("id")).isEqualTo(company.getId());
+    assertThat(response.body().jsonPath().getString("name")).isEqualTo(company.getName());
+    assertThat(response.body().jsonPath().getString("phone")).isEqualTo(company.getPhone());
+    assertThat(response.body().jsonPath().getString("address")).isEqualTo(company.getAddress());
+  }
+
   private CreateCompanyRequest createCompanyRequest() {
     CreateCompanyRequest request = new CreateCompanyRequest();
     request.setName("A기업");
