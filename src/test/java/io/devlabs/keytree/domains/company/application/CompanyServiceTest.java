@@ -10,6 +10,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
 
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -39,6 +41,26 @@ public class CompanyServiceTest {
         assertThat(response.getName()).isEqualTo(company.getName());
         assertThat(response.getAddress()).isEqualTo(company.getAddress());
         assertThat(response.getPhone()).isEqualTo(company.getPhone());
+    }
+
+    @Test
+    @DisplayName("기업 리스트 조회")
+    void getCompanies() {
+        // given
+        Company firstCompany = createCompanyEntity(1L, createCompanyRequest());
+        Company secondCompany = createCompanyEntity(2L, createCompanyRequest());
+        List<Company> company = List.of(firstCompany, secondCompany);
+
+        when(companyRepository.findAll()).thenReturn(company);
+
+        // when
+        List<CreateCompanyResponse> foundCompany = companyService.getCompanies();
+        List<Long> companyIds = foundCompany.stream().map(CreateCompanyResponse::getId).toList();
+
+        // then
+        assertThat(foundCompany.size()).isEqualTo(company.size());
+        assertThat(companyIds.contains(firstCompany.getId())).isTrue();
+        assertThat(companyIds.contains(secondCompany.getId())).isTrue();
     }
 
     private Company createCompanyEntity(Long companyId, CreateCompanyRequest request) {

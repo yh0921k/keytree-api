@@ -54,6 +54,31 @@ public class CompanyControllerTest {
     assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
   }
 
+  @DisplayName("기업 리스트 조회 API")
+  @Test
+  void getSchedules() {
+    // given
+    companyService.createCompany(createCompanyRequest());
+    companyService.createCompany(createCompanyRequest());
+
+    // when
+    ExtractableResponse<Response> response =
+        RestAssured.given()
+            .log()
+            .all()
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .when()
+            .get("/companies")
+            .then()
+            .log()
+            .all()
+            .extract();
+
+    // then
+    assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    assertThat(response.body().jsonPath().getList("$").size()).isEqualTo(2);
+  }
+
   private CreateCompanyRequest createCompanyRequest() {
     CreateCompanyRequest request = new CreateCompanyRequest();
     request.setName("A기업");
