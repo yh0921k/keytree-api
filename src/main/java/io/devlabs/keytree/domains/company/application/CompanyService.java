@@ -51,4 +51,18 @@ public class CompanyService {
             .toList();
     }
 
+    @Transactional(readOnly = true)
+    public CreateCompanyResponse getCompanyById(Long id) {
+        Company company = companyRepository
+            .findById(id)
+            .orElseThrow(() -> new IllegalArgumentException("유효하지 않은 기업입니다."));
+
+        return CreateCompanyResponse.builder()
+            .id(company.getId())
+            .name(company.getName())
+            .address(company.getAddress())
+            .phone(company.getPhone())
+            .build();
+    }
+
 }

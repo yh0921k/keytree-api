@@ -7,6 +7,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -55,6 +56,23 @@ public class CompanyRepositoryTest {
     assertThat(companyIds.contains(1L)).isTrue();
     assertThat(companyIds.contains(2L)).isTrue();
   }
+
+  @Test
+  @DisplayName("기업 인덱스로 기업 엔티티 조회")
+  void findById() {
+    // given
+    Company company = createCompany();
+    Company savedCompany = companyRepository.save(company);
+
+    // when
+    Optional<Company> foundCompany = companyRepository.findById(savedCompany.getId());
+
+    // then
+    assertThat(foundCompany.isPresent()).isTrue();
+    assertThat(foundCompany.get()).isSameAs(savedCompany);
+    assertThat(foundCompany.get()).isEqualTo(savedCompany);
+  }
+
 
   private Company createCompany() {
     return Company.builder()

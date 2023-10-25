@@ -11,6 +11,7 @@ import org.mockito.Mock;
 
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -61,6 +62,23 @@ public class CompanyServiceTest {
         assertThat(foundCompany.size()).isEqualTo(company.size());
         assertThat(companyIds.contains(firstCompany.getId())).isTrue();
         assertThat(companyIds.contains(secondCompany.getId())).isTrue();
+    }
+
+    @Test
+    @DisplayName("기업 아이디로 특정 기업 조회")
+    void getCompanyById() {
+        // given
+        Company company = createCompanyEntity(1L, createCompanyRequest());
+        when(companyRepository.findById(any(Long.class))).thenReturn(Optional.of(company));
+
+        // when
+        CreateCompanyResponse response = companyService.getCompanyById(company.getId());
+
+        // then
+        assertThat(response.getId()).isEqualTo(company.getId());
+        assertThat(response.getName()).isEqualTo(company.getName());
+        assertThat(response.getAddress()).isEqualTo(company.getAddress());
+        assertThat(response.getPhone()).isEqualTo(company.getPhone());
     }
 
     private Company createCompanyEntity(Long companyId, CreateCompanyRequest request) {

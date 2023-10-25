@@ -23,4 +23,9 @@ public class CompanyController {
     public List<CreateCompanyResponse> getCompanies() {
         return companyService.getCompanies();
     }
+
+    @GetMapping("/companies/{companyId}")
+    public CreateCompanyResponse getCompanyById(@PathVariable Long companyId) {
+        return companyService.getCompanyById(companyId);
+    }
 }
