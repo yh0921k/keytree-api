@@ -81,6 +81,16 @@ public class CompanyServiceTest {
         assertThat(response.getPhone()).isEqualTo(company.getPhone());
     }
 
+    @Test
+    @DisplayName("기업 아이디로 기업 삭제시 deleteById()가 한 번 수행됨")
+    void removeCompanyByIdCallDeleteByIdOnce() {
+        // when
+        companyService.removeCompanyById(1L);
+
+        // when, then
+        verify(companyRepository, times(1)).deleteById(any(Long.class));
+    }
+
     private Company createCompanyEntity(Long companyId, CreateCompanyRequest request) {
         return Company.builder()
                 .id(companyId)
