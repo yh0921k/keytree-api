@@ -65,4 +65,8 @@ public class CompanyService {
             .build();
     }
 
+    @Transactional
+    public void removeCompanyById(Long id) {
+        companyRepository.deleteById(id);
+    }
 }

@@ -28,4 +28,9 @@ public class CompanyController {
     public CreateCompanyResponse getCompanyById(@PathVariable Long companyId) {
         return companyService.getCompanyById(companyId);
     }
+
+    @DeleteMapping("/companies/{companyId}")
+    public void removeCompanyById(@PathVariable Long companyId) {
+        companyService.removeCompanyById(companyId);
+    }
 }

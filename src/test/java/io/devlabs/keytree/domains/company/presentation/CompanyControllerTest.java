@@ -56,7 +56,7 @@ public class CompanyControllerTest {
 
   @DisplayName("기업 리스트 조회 API")
   @Test
-  void getSchedules() {
+  void getCompanies() {
     // given
     companyService.createCompany(createCompanyRequest());
     companyService.createCompany(createCompanyRequest());
@@ -105,6 +105,46 @@ public class CompanyControllerTest {
     assertThat(response.body().jsonPath().getString("name")).isEqualTo(company.getName());
     assertThat(response.body().jsonPath().getString("phone")).isEqualTo(company.getPhone());
     assertThat(response.body().jsonPath().getString("address")).isEqualTo(company.getAddress());
+  }
+
+  @DisplayName("기업 인덱스로 삭제 API")
+  @Test
+  void removeCompanyById() {
+    // given
+    CreateCompanyResponse company = companyService.createCompany(createCompanyRequest());
+
+    // when
+    ExtractableResponse<Response> removeCompanyResponse =
+        RestAssured.given()
+            .pathParam("companyId", company.getId())
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .log()
+            .all()
+            .when()
+            .delete("/companies/{companyId}")
+            .then()
+            .log()
+            .all()
+            .extract();
+
+    ExtractableResponse<Response> getCompanyResponse =
+        RestAssured.given()
+            .pathParam("companyId", company.getId())
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .log()
+            .all()
+            .when()
+            .get("/companies/{companyId}")
+            .then()
+            .log()
+            .all()
+            .extract();
+
+    // then
+    assertThat(removeCompanyResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
+
+    assertThat(getCompanyResponse.statusCode())
+        .isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
   }
 
   private CreateCompanyRequest createCompanyRequest() {
