@@ -73,6 +73,20 @@ public class CompanyRepositoryTest {
     assertThat(foundCompany.get()).isEqualTo(savedCompany);
   }
 
+  @Test
+  @DisplayName("일정 아이디로 일정 엔티티 삭제")
+  void deleteById() {
+    // given
+    Company company = createCompany();
+    Company savedCompany = companyRepository.save(company);
+
+    // when
+    companyRepository.deleteById(savedCompany.getId());
+    Optional<Company> deletedCompany = companyRepository.findById(savedCompany.getId());
+
+    // then
+    assertThat(deletedCompany.isEmpty()).isTrue();
+  }
 
   private Company createCompany() {
     return Company.builder()
